@@ -8,17 +8,19 @@ import (
 
 type Response struct {
 	Message string `json:"message"`
+	Data    any
 }
 
 type ErrResponse struct {
 	ErrorMessage string `json:"errorMessage"`
 }
 
-func WriteResponse(w http.ResponseWriter, statusCode int, message string) {
+func WriteResponse(w http.ResponseWriter, statusCode int, message string, data any) {
 	w.Header().Add("content-type", "application/json")
 	w.WriteHeader(statusCode)
 	resp := Response{
 		Message: message,
+		Data:    data,
 	}
 	respBytes, err := json.Marshal(resp)
 	if err != nil {
