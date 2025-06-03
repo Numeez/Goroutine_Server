@@ -2,17 +2,20 @@ package main
 
 import (
 	"log"
-	"net/http"
+
+	"github.com/joho/godotenv"
 )
 
 func main() {
-	route := http.NewServeMux()
-	route.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
-		w.WriteHeader(http.StatusOK)
-		_, _ = w.Write([]byte("This is the health api"))
-	})
-	log.Println("Server listening")
-	if err := http.ListenAndServe(":8080", route); err != nil {
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
+
+	db, err := connectDB()
+	if err != nil {
 		log.Fatal(err)
 	}
+	server := NewServer(":8080", db)
+	server.run()
 }
